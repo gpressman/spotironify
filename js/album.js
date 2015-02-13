@@ -30,8 +30,8 @@ class Album {
         Utils.assertString(data.label, 'Label should be a string');
         this.label = data.label;
 
-        Utils.assertString(data.url, 'URL should be a string');
-        this.cover = data.url;
+        Utils.assertString(data.cover, 'Cover should be a string');
+        this.cover = data.cover;
 
         Utils.assertNumber(data.price, 'Price should be a number');
         this.price = data.price;

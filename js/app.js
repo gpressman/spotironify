@@ -201,6 +201,7 @@ var albums = []
 // $(document).on('click',".track-class",onSongs);
 
 function showAlbums() {
+    $(".album-list").empty()
 	albums.forEach(function(album){
 			$(".album-list").append(
 				`<li> 
@@ -212,6 +213,15 @@ function showAlbums() {
 			)
 			var this_li = $(".album-list li:last");
 			this_li.on('click', '.reveal-songs', function(){
+                var songsRequest = $.get("https://api.spotify.com/v1/albums/" + album.id) 
+                songsRequest.done(function (response) {
+                    response.forEach(function (song){
+                        var newSong = new TrackClass({
+                        title: song.name, 
+                        duration: song.duration_ms
+})
+                    })
+                })
 				onSongs(this_li, album);
 			})
 	})
@@ -238,11 +248,12 @@ $(".button-search-selector").click (function(event){
 	var searchTerm = $(".search-selector-field").val();
     var request = $.get('https://api.spotify.com/v1/search?type=album&query=' + searchTerm)
     request.done(function (response) {
+        albums = []
         response.albums.items.forEach(function(album){
             var newAlbum = new AlbumClass ({
                 title: album.name,
-                cover: album.images[0].url
-
+                cover: album.images[0].url,
+                id: album.id
 
             })
             albums.push(newAlbum);

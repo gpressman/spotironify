@@ -12,30 +12,37 @@ var albums = []
 function showAlbums() {
     $(".album-list").empty()
 	albums.forEach(function(album){
-			$(".album-list").append(
-				`<li> 
-					Title: ${album.title}, <br> <img src="${album.cover}" width="200"  /><br><br>
-					<button class="reveal-songs">songs</button>
-					
-					<ul class="track-class"></ul>
-				</li>`
-			)
-			var this_li = $(".album-list li:last");
-			this_li.on('click', '.reveal-songs', function(){
-                var songsRequest = $.get("https://api.spotify.com/v1/albums/" + album.id) 
-                songsRequest.done(function (response) {
-                     album.tracks = []
-                    response.tracks.items.forEach(function (song){
-                        var newSong = new TrackClass({
-                        title: song.name, 
-                        duration: song.duration_ms
-})
-                        album.addTrack(newSong)
+		$(".album-list").append(
+		  `<li> 
+			  Title: ${album.title}, <br> <img src="${album.cover}" width="200"  /><br><br>
+			  <button class="reveal-songs">songs</button>
+			  <ul class="track-class"></ul>
+           </li>`
+        )
+	
+    
+        var this_li = $(".album-list li:last");
+	    
+	    this_li.on('click', '.reveal-songs', function(){
+            var songsRequest = $.get("https://api.spotify.com/v1/albums/" + album.id) 
+            
+            songsRequest.done(function (response) {
+                album.tracks = []
+
+                response.tracks.items.forEach(function (song){
+                	onSongs(this_li, album);
+                    var newSong = new TrackClass({
+                      title: song.name, 
+                      duration: song.duration_ms 
+                   
                     })
-                    
+                
+                    album.addTrack(newSong)
                 })
-				onSongs(this_li, album);
-			})
+            })
+			
+			
+	    })
 	})
 }
 
@@ -49,10 +56,10 @@ function onSongs(my_album, album) {
 				${track.title}, <br>  duration: ${((track.duration/1000)/60).toFixed(2)} minutes
 				<br>
 				<br>
-			</li>`)
-			
-		})
-	}
+			</li>`
+	    )
+	})
+}
 
 $(".button-search-selector").click (function(event){
 	event.preventDefault()
@@ -65,12 +72,10 @@ $(".button-search-selector").click (function(event){
                 title: album.name,
                 cover: album.images[0].url,
                 id: album.id
-
             })
             albums.push(newAlbum);
         })
         showAlbums()
-
     })
 });
 
